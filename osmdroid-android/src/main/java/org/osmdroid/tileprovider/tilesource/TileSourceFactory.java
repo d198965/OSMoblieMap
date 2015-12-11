@@ -3,6 +3,7 @@ package org.osmdroid.tileprovider.tilesource;
 import java.util.ArrayList;
 
 import org.osmdroid.tileprovider.MapTile;
+import org.osmdroid.tileprovider.util.SourceUtil;
 
 public class TileSourceFactory {
 
@@ -147,7 +148,12 @@ public class TileSourceFactory {
                public String getTileURLString(MapTile aTile) {
                     return getBaseUrl() + aTile.getZoomLevel() + "/" + aTile.getY() + "/" + aTile.getX();
                }
-          };
+
+		 @Override
+		 public int getTileSourceType() {
+			 return SourceUtil.XY_TILE_SOURCE_TYPE;
+		 }
+	 };
 
 	private static ArrayList<ITileSource> mTileSources;
 	static {

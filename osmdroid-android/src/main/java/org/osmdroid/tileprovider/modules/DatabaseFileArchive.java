@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 
 import org.osmdroid.tileprovider.MapTile;
+import org.osmdroid.tileprovider.cache.SQLLocalStorageManager;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 
 import android.database.Cursor;
@@ -25,29 +26,24 @@ import org.osmdroid.api.IMapView;
  */
 public class DatabaseFileArchive implements IArchiveFile {
 
-	private SQLiteDatabase mDatabase;
+	private SQLLocalStorageManager sqlLocalStorageManager;
 
 	public DatabaseFileArchive(){}
 
-	private DatabaseFileArchive(final SQLiteDatabase pDatabase) {
-		mDatabase = pDatabase;
+	private DatabaseFileArchive(File pFile) {
+		sqlLocalStorageManager = SQLLocalStorageManager.getInstance(pFile);
 	}
 
 	public static DatabaseFileArchive getDatabaseFileArchive(final File pFile) throws SQLiteException {
 		//return new DatabaseFileArchive(SQLiteDatabase.openOrCreateDatabase(pFile, null));
-		return new DatabaseFileArchive(SQLiteDatabase.openDatabase(pFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY));
+		return new DatabaseFileArchive(pFile);
 
 	}
 
 	public Set<String> getTileSources(){
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = null;
 		try {
-			final String[] tile = {"provider"};
-			final Cursor cur = mDatabase.rawQuery("SELECT distinct provider FROM tiles", null);
-			while(cur.moveToNext()) {
-				ret.add(cur.getString(0));
-			}
-			cur.close();
+			ret = sqlLocalStorageManager.getProviders();
 		} catch (final Exception e) {
 			Log.w(IMapView.LOGTAG,"Error getting tile sources: ", e);
 		}
@@ -56,42 +52,27 @@ public class DatabaseFileArchive implements IArchiveFile {
 
 	@Override
 	public void init(File pFile) throws Exception {
-		mDatabase=SQLiteDatabase.openDatabase(pFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY);
+		sqlLocalStorageManager = SQLLocalStorageManager.getInstance(pFile);
 	}
 
 	@Override
 	public InputStream getInputStream(final ITileSource pTileSource, final MapTile pTile) {
 		try {
-			InputStream ret = null;
-			final String[] tile = {"tile"};
-			final long x = (long) pTile.getX();
-			final long y = (long) pTile.getY();
-			final long z = (long) pTile.getZoomLevel();
-			final long index = ((z << z) + x << z) + y;
-			final Cursor cur = mDatabase.query("tiles", tile, "key = " + index + " and provider = '" + pTileSource.name() + "'", null, null, null, null);
-			if(cur.getCount() != 0) {
-				cur.moveToFirst();
-				ret = new ByteArrayInputStream(cur.getBlob(0));
-			}
-			cur.close();
-			if(ret != null) {
-				return ret;
-			}
+			sqlLocalStorageManager.get(pTile,pTileSource.getTileSourceID());
 		} catch(final Throwable e) {
 			Log.w(IMapView.LOGTAG,"Error getting db stream: " + pTile, e);
 		}
-
 		return null;
 	}
 
 	@Override
 	public void close() {
-		mDatabase.close();
+		sqlLocalStorageManager.resetLocalStorage();
 	}
 
 	@Override
 	public String toString() {
-		return "DatabaseFileArchive [mDatabase=" + mDatabase.getPath() + "]";
+		return "DatabaseFileArchive [mDatabase=" + sqlLocalStorageManager.toString() + "]";
 	}
 
 }

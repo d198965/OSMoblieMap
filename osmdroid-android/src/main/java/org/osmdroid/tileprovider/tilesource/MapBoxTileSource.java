@@ -5,9 +5,9 @@
 
 package org.osmdroid.tileprovider.tilesource;
 
-import org.osmdroid.ResourceProxy;
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.util.ManifestUtil;
+import org.osmdroid.tileprovider.util.SourceUtil;
 
 import android.content.Context;
 
@@ -59,10 +59,15 @@ public class MapBoxTileSource extends OnlineTileSourceBase
      * @param imageFilenameEnding Image File Extension
      * @param mapBoxVersionBaseUrl MapBox Version Base Url @see https://www.mapbox.com/developers/api/#Versions
      */
-    public MapBoxTileSource(String name, int zoomMinLevel, int zoomMaxLevel, int tileSizePixels, String imageFilenameEnding, String mapBoxMapId, String mapBoxVersionBaseUrl)
+    public MapBoxTileSource(String name, int zoomMinLevel, int zoomMaxLevel, int tileSizePixels, String imageFilenameEnding, String mapBoxMapId, String mapBoxVersionBaseUrl,int sourceID)
     {
 		super(name, zoomMinLevel, zoomMaxLevel, tileSizePixels, imageFilenameEnding,
 				new String[] { mapBoxVersionBaseUrl });
+    }
+
+    @Override
+    public int getTileSourceType() {
+        return SourceUtil.MAP_BOX_TILE_SOURCE_TYPE;
     }
 
     /**

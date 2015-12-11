@@ -36,6 +36,17 @@ public interface ITileSource {
 	 */
 	String getTileRelativeFilenameString(MapTile aTile);
 
+	/*
+	 获取TIle源的ID，不同的数据源应该唯一标识，在数据存储中可以标记Tile属于哪一个数据源。
+	 */
+	long getTileSourceID();
+
+	/**
+	 * Tile源的不同类型，如xy、mapbox、openstreet等等
+	 * @return
+     */
+	int getTileSourceType();
+
 	/**
 	 * Get a rendered Drawable from the specified file path.
 	 *

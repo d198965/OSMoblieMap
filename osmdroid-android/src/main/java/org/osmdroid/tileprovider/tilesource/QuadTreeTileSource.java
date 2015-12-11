@@ -1,6 +1,7 @@
 package org.osmdroid.tileprovider.tilesource;
 
 import org.osmdroid.tileprovider.MapTile;
+import org.osmdroid.tileprovider.util.SourceUtil;
 
 public class QuadTreeTileSource extends OnlineTileSourceBase {
 
@@ -38,4 +39,8 @@ public class QuadTreeTileSource extends OnlineTileSourceBase {
 		return quadKey.toString();
 	}
 
+	@Override
+	public int getTileSourceType() {
+		return SourceUtil.QUAD_TREE_SOURCE_TYPE;
+	}
 }

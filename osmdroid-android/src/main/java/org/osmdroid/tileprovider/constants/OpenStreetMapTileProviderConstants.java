@@ -53,6 +53,10 @@ public class OpenStreetMapTileProviderConstants {
       */
 	public static File TILE_PATH_BASE = new File(OSMDROID_PATH, "tiles");
 
+	public static String SQLITEDB = "maptile.db";
+
+	public static File TILE_DB_PATH = new File(OSMDROID_PATH,"sqlite/"+SQLITEDB);
+
 	/** add an extension to files on sdcard so that gallery doesn't index them */
 	public static final String TILE_PATH_EXTENSION = ".tile";
 
@@ -100,7 +104,15 @@ public class OpenStreetMapTileProviderConstants {
                TILE_PATH_BASE = f.getAbsoluteFile();
          }
      }
-     
+
+	public static void setDBCachePath(String newDBPath){
+		File f=new File(newDBPath);
+		if (f.exists()){
+			TILE_DB_PATH = f.getAbsoluteFile();
+		}
+	}
+
+
      /** Change the osmdroid tiles cache sizes. (note this represents size of the cache on disk, not in memory)
       * @param maxCacheSize in Mb. Default is 600 Mb. 
       * @param trimCacheSize When the cache size exceeds maxCacheSize, tiles will be automatically removed to reach this target. In Mb. Default is 500 Mb. 

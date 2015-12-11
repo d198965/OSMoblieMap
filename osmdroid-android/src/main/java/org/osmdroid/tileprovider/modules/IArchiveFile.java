@@ -27,6 +27,6 @@ public interface IArchiveFile {
 	 * @since 5.0
 	 * @return
 	 */
-	public Set<String> getTileSources();
+	Set<String> getTileSources();
 
 }

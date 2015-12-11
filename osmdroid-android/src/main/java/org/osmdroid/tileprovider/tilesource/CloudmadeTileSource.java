@@ -5,6 +5,7 @@ import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IMapView;
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.util.CloudmadeUtil;
+import org.osmdroid.tileprovider.util.SourceUtil;
 
 public class CloudmadeTileSource extends OnlineTileSourceBase implements IStyledTileSource<Integer> {
 
@@ -35,6 +36,11 @@ public class CloudmadeTileSource extends OnlineTileSourceBase implements IStyled
 		final String token = CloudmadeUtil.getCloudmadeToken();
 		return String.format(getBaseUrl(), key, mStyle, getTileSizePixels(), pTile.getZoomLevel(),
 				pTile.getX(), pTile.getY(), mImageFilenameEnding, token);
+	}
+
+	@Override
+	public int getTileSourceType() {
+		return SourceUtil.CLOUDMADE_TILE_SOURCE_TYPE;
 	}
 
 	@Override

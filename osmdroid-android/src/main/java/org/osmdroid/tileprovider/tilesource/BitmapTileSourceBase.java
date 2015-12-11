@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import org.osmdroid.api.IMapView;
+import org.osmdroid.tileprovider.util.SourceUtil;
 
 public abstract class BitmapTileSourceBase implements ITileSource {
 
@@ -25,7 +26,7 @@ public abstract class BitmapTileSourceBase implements ITileSource {
 	protected final String mName;
 	protected final String mImageFilenameEnding;
 	protected final Random random = new Random();
-
+	protected final int mSourceID;
 	private final int mTileSizePixels;
 
 	//private final string mResourceId;
@@ -40,13 +41,14 @@ public abstract class BitmapTileSourceBase implements ITileSource {
 	 */
 	public BitmapTileSourceBase(final String aName, 
 			final int aZoomMinLevel, final int aZoomMaxLevel, final int aTileSizePixels,
-			final String aImageFilenameEnding) {
+			final String aImageFilenameEnding,final int sourceID) {
 		mOrdinal = globalOrdinal++;
 		mName = aName;
 		mMinimumZoomLevel = aZoomMinLevel;
 		mMaximumZoomLevel = aZoomMaxLevel;
 		mTileSizePixels = aTileSizePixels;
 		mImageFilenameEnding = aImageFilenameEnding;
+		mSourceID = sourceID;
 	}
 
 	@Override
@@ -82,6 +84,15 @@ public abstract class BitmapTileSourceBase implements ITileSource {
 		return mTileSizePixels;
 	}
 
+	@Override
+	public long getTileSourceID() {
+		return mSourceID << SourceUtil.findMaxPosition(getTileSourceType()) | getTileSourceType();
+	}
+
+	public static int getTileType(final long sourceID){
+		//获取SourceID二进制的第一个1
+		return 1 << SourceUtil.findMinPosition(sourceID);
+	}
 
 	@Override
 	public Drawable getDrawable(final String aFilePath) {

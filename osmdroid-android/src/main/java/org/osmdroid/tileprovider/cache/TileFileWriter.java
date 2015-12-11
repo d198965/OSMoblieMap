@@ -1,4 +1,4 @@
-package org.osmdroid.tileprovider.modules;
+package org.osmdroid.tileprovider.cache;
 
 import android.util.Log;
 import java.io.BufferedOutputStream;
@@ -15,6 +15,7 @@ import org.osmdroid.api.IMapView;
 
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
+import org.osmdroid.tileprovider.modules.IFilesystemCache;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.util.StreamUtils;
 
@@ -25,7 +26,7 @@ import org.osmdroid.tileprovider.util.StreamUtils;
  * @author Neil Boyd
  *
  */
-public class TileWriter implements IFilesystemCache {
+public class TileFileWriter implements IFilesystemCache {
 
 	// ===========================================================
 	// Constants
@@ -43,7 +44,7 @@ public class TileWriter implements IFilesystemCache {
 	// Constructors
 	// ===========================================================
 
-	public TileWriter() {
+	public TileFileWriter() {
 
 		// do this in the background because it takes a long time
 		final Thread t = new Thread() {
