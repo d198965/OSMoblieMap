@@ -2,6 +2,7 @@ package org.osmdroid.samplefragments;
 
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
+import org.osmdroid.tileprovider.util.SourceUtil;
 
 /**
  * Simple how to for setting a custom tile source
@@ -22,6 +23,11 @@ public class SampleCustomTileSource extends BaseSampleFragment{
                public String getTileURLString(MapTile aTile) {
                     return getBaseUrl() + aTile.getZoomLevel() + "/" + aTile.getY() + "/" + aTile.getX()
 				+ mImageFilenameEnding;
+               }
+
+               @Override
+               public int getTileSourceType() {
+                    return SourceUtil.XY_TILE_SOURCE_TYPE;
                }
           });
           

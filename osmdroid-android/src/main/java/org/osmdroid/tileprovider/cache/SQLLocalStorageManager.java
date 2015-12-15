@@ -66,7 +66,7 @@ public class SQLLocalStorageManager implements ILocalStorage {
     }
 
     public static SQLLocalStorageManager getInstance(File sqliteFile) {
-        if (localStorage == null || db == null || !sqliteFile.getPath().equals(db.getPath())) {
+        if (localStorage == null || db == null || !db.isOpen() || !sqliteFile.getPath().equals(db.getPath())) {
             localStorage = new SQLLocalStorageManager(sqliteFile);
         }
         return localStorage;
@@ -85,7 +85,7 @@ public class SQLLocalStorageManager implements ILocalStorage {
         String sqliteFilePath = pFile.getPath();//TODO
         File mapFile = new File(pFile.getParent());//TODO
         if (!mapFile.exists()) {
-            mapFile.mkdir();
+            mapFile.mkdirs();
         }
         db = SQLiteDatabase.openDatabase(sqliteFilePath, null,
                 SQLiteDatabase.CREATE_IF_NECESSARY);

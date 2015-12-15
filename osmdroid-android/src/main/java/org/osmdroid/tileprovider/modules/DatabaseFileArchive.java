@@ -1,19 +1,14 @@
 package org.osmdroid.tileprovider.modules;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.zip.ZipEntry;
 
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.cache.SQLLocalStorageManager;
+import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import org.osmdroid.api.IMapView;
@@ -28,7 +23,9 @@ public class DatabaseFileArchive implements IArchiveFile {
 
 	private SQLLocalStorageManager sqlLocalStorageManager;
 
-	public DatabaseFileArchive(){}
+	public DatabaseFileArchive(){
+		sqlLocalStorageManager = SQLLocalStorageManager.getInstance(OpenStreetMapTileProviderConstants.TILE_DB_PATH);
+	}
 
 	private DatabaseFileArchive(File pFile) {
 		sqlLocalStorageManager = SQLLocalStorageManager.getInstance(pFile);
@@ -58,7 +55,7 @@ public class DatabaseFileArchive implements IArchiveFile {
 	@Override
 	public InputStream getInputStream(final ITileSource pTileSource, final MapTile pTile) {
 		try {
-			sqlLocalStorageManager.get(pTile,pTileSource.getTileSourceID());
+			return sqlLocalStorageManager.get(pTile,pTileSource.getTileSourceID());
 		} catch(final Throwable e) {
 			Log.w(IMapView.LOGTAG,"Error getting db stream: " + pTile, e);
 		}
