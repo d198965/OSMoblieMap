@@ -66,6 +66,7 @@ public class OpenStreetMapTileProviderConstants {
 	 */
 	public static final int CACHE_MAPTILECOUNT_DEFAULT = 9;
 
+	public static final int CACHE_MAPTILESIZE_DEFAULT = 10 << 16;// 10 M
 	/**
 	 * number of tile download threads, conforming to OSM policy:
 	 * http://wiki.openstreetmap.org/wiki/Tile_usage_policy

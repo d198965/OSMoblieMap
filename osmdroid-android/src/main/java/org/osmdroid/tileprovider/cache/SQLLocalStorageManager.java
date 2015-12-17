@@ -43,8 +43,6 @@ public class SQLLocalStorageManager implements ILocalStorage {
 
     private static final Bitmap.CompressFormat IMAGE_FORMATE = Bitmap.CompressFormat.JPEG;
 
-    private static SharedPreferences prefs;
-
     private static String IMAGE_COLUMN = "image";
 
     private static String TILES_TABLE = "tiles";
@@ -61,9 +59,11 @@ public class SQLLocalStorageManager implements ILocalStorage {
 
     private static SQLiteDatabase db;
 
-    public static void init(Application app) {
-        prefs = app.getSharedPreferences("iwhere", Context.MODE_PRIVATE);
-    }
+    //private static SharedPreferences prefs;
+
+//    public static void init(Application app) {
+//        prefs = app.getSharedPreferences("iwhere", Context.MODE_PRIVATE);
+//    }
 
     public static SQLLocalStorageManager getInstance(File sqliteFile) {
         if (localStorage == null || db == null || !db.isOpen() || !sqliteFile.getPath().equals(db.getPath())) {
@@ -72,8 +72,12 @@ public class SQLLocalStorageManager implements ILocalStorage {
         return localStorage;
     }
 
-    public void resetLocalStorage() {
-        db.close();
+    // 需要在APP退出时释放
+    public static void resetLocalStorage() {
+        if (db != null) {
+            db.close();
+            db = null;
+        }
         localStorage = null;
     }
 
@@ -131,7 +135,7 @@ public class SQLLocalStorageManager implements ILocalStorage {
         return count == 1;
     }
 
-    public void put(MapTile tile, long sourceID,String provider, byte[] data) {
+    public void put(MapTile tile, long sourceID, String provider, byte[] data) {
         if (tile == null || data == null)
             return;
         db.delete(SQLLocalStorageManager.TILES_TABLE,
@@ -154,7 +158,7 @@ public class SQLLocalStorageManager implements ILocalStorage {
     public void put(MapTile tile, long sourceID, byte[] data) {
         if (tile == null || data == null)
             return;
-        put(tile,sourceID,null,data);
+        put(tile, sourceID, null, data);
     }
 
     public void put(MapTile tile, long sourceID, Bitmap data) throws Exception {
@@ -182,18 +186,18 @@ public class SQLLocalStorageManager implements ILocalStorage {
         return pic;
     }
 
-    public Set<String> getProviders(){
+    public Set<String> getProviders() {
         Set<String> providers = new HashSet<>();
-        try{
-            Cursor cursor = db.rawQuery("SELECT distinct "+P_COLUMN+" FROM "+TILES_TABLE,null);
-            if (cursor ==null){
+        try {
+            Cursor cursor = db.rawQuery("SELECT distinct " + P_COLUMN + " FROM " + TILES_TABLE, null);
+            if (cursor == null) {
                 return providers;
             }
-            while(cursor.moveToNext()) {
+            while (cursor.moveToNext()) {
                 providers.add(cursor.getString(0));
             }
             cursor.close();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return providers;
@@ -203,7 +207,7 @@ public class SQLLocalStorageManager implements ILocalStorage {
         if (db == null) {
             return false;
         }
-       // String selectSQL = "delete * from " + SQLLocalStorageManager.TILES_TABLE + " order by " + SQLLocalStorageManager.UPDATE_TIME + " desc limit 1";
+        // String selectSQL = "delete * from " + SQLLocalStorageManager.TILES_TABLE + " order by " + SQLLocalStorageManager.UPDATE_TIME + " desc limit 1";
         int itemCount = db.delete(SQLLocalStorageManager.TILES_TABLE,
                 "1=1 order by " + SQLLocalStorageManager.UPDATE_TIME_COLUMN + " desc limit 1",
                 null);
@@ -218,21 +222,12 @@ public class SQLLocalStorageManager implements ILocalStorage {
         return temFile.length();
     }
 
-    public String toString(){
-        if (db == null){
+    public String toString() {
+        if (db == null) {
             return "db is null";
         }
         return db.getPath();
     }
-
-    /**
-     *
-     */
-//    public static void putTile(MapTile tile) {
-//        put(TILEX, tile.getX());
-//        put(TILEY, tile.getY());
-//        put(TILEZ, tile.getZoomLevel());
-//    }
 
     private static MapTile getTile(double longitude, double latitude, int zoom) {
         double maxlat = Math.PI;
@@ -265,30 +260,39 @@ public class SQLLocalStorageManager implements ILocalStorage {
     }
 
     /**
+     *
+     */
+//    public static void putTile(MapTile tile) {
+//        put(TILEX, tile.getX());
+//        put(TILEY, tile.getY());
+//        put(TILEZ, tile.getZoomLevel());
+//    }
+
+    /**
      * @return
      */
-    public static MapTile getTile() {
-        int x, y, z; //
-        x = prefs.getInt(TILEX, 113); //0
-        y = prefs.getInt(TILEY, 30);  //0
-        z = prefs.getInt(TILEZ, 13);  //16
-
-        return getTile(113.9, 30, 13);
-    }
-
-    private static void put(String name, Object value) {
-        SharedPreferences.Editor editor = prefs.edit();
-        if (value.getClass() == Boolean.class) {
-            editor.putBoolean(name, (Boolean) value);
-        }
-        if (value.getClass() == String.class) {
-            editor.putString(name, (String) value);
-        }
-        if (value.getClass() == Integer.class) {
-            editor.putInt(name, ((Integer) value).intValue());
-        }
-        editor.commit();
-    }
+//    public static MapTile getTile() {
+//        int x, y, z; //
+//        x = prefs.getInt(TILEX, 113); //0
+//        y = prefs.getInt(TILEY, 30);  //0
+//        z = prefs.getInt(TILEZ, 13);  //16
+//
+//        return getTile(113.9, 30, 13);
+//    }
+//
+//    private static void put(String name, Object value) {
+//        SharedPreferences.Editor editor = prefs.edit();
+//        if (value.getClass() == Boolean.class) {
+//            editor.putBoolean(name, (Boolean) value);
+//        }
+//        if (value.getClass() == String.class) {
+//            editor.putString(name, (String) value);
+//        }
+//        if (value.getClass() == Integer.class) {
+//            editor.putInt(name, ((Integer) value).intValue());
+//        }
+//        editor.commit();
+//    }
 
 
 }

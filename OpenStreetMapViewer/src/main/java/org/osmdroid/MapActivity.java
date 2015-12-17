@@ -37,6 +37,8 @@ public class MapActivity extends FragmentActivity
 			MapFragment mapFragment = MapFragment.newInstance();
 			fm.beginTransaction().add(org.osmdroid.R.id.map_container, mapFragment, MAP_FRAGMENT_TAG).commit();
 		}
+        //TODO leak
+        StreetMapApplication.getRefWatcher(this).watch(this);
     }
 
     @Override

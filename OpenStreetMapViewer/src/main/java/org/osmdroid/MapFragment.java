@@ -79,6 +79,8 @@ public class MapFragment extends Fragment implements OpenStreetMapConstants {
           mMapView = new MapView(inflater.getContext(), mResourceProxy);
         // Call this method to turn off hardware acceleration at the View level.
           // setHardwareAccelerationOff();
+         //TODO leak
+         StreetMapApplication.getRefWatcher(getContext()).watch(mMapView);
           return mMapView;
      }
 

@@ -53,29 +53,31 @@ public class MapTileProviderBasic extends MapTileProviderArray implements IMapTi
         final MapTileAssetsProvider assetsProvider = new MapTileAssetsProvider(
                 pRegisterReceiver, pContext.getAssets(), pTileSource);
         mTileProviderList.add(assetsProvider);
+//---------------------------------------------------------- 文件存储
+		final MapTileFilesystemProvider fileSystemProvider = new MapTileFilesystemProvider(
+				pRegisterReceiver, pTileSource);
+		mTileProviderList.add(fileSystemProvider);
 
-//		final MapTileFilesystemProvider fileSystemProvider = new MapTileFilesystemProvider(
-//				pRegisterReceiver, pTileSource);
-//		mTileProviderList.add(fileSystemProvider);
+
+ 		final TileFileWriter tileWriter = new TileFileWriter();
+		final MapTileDownloader downloaderProvider = new MapTileDownloader(pTileSource, tileWriter,
+				aNetworkAvailablityCheck);
+		mTileProviderList.add(downloaderProvider);
+
+//---------------------------------------------------------- DB存储
+//        IArchiveFile[] pArchives = new IArchiveFile[1];
+//        pArchives[0] = new DatabaseFileArchive();
+//        final MapTileFileArchiveProvider archiveProvider = new MapTileFileArchiveProvider(
+//                pRegisterReceiver, pTileSource, pArchives);//注册文件
+//        mTileProviderList.add(archiveProvider);
 //
-//		final MapTileFileArchiveProvider archiveProvider = new MapTileFileArchiveProvider(
+//        final TileDBWriter tileDBWriter = new TileDBWriter();
+//        final MapTileDownloader mapTileDownloader = new MapTileDownloader(pTileSource, tileDBWriter, aNetworkAvailablityCheck);
+//        mTileProviderList.add(mapTileDownloader);
+
+//---------------------------------------------------------- 无用的
+        //		final MapTileFileArchiveProvider archiveProvider = new MapTileFileArchiveProvider(
 //				pRegisterReceiver, pTileSource);
 //		mTileProviderList.add(archiveProvider);
-
-// 		final TileFileWriter tileWriter = new TileFileWriter();
-//		final MapTileDownloader downloaderProvider = new MapTileDownloader(pTileSource, tileWriter,
-//				aNetworkAvailablityCheck);
-//		mTileProviderList.add(downloaderProvider);
-
-        IArchiveFile[] pArchives = new IArchiveFile[1];
-        pArchives[0] = new DatabaseFileArchive();
-        final MapTileFileArchiveProvider archiveProvider = new MapTileFileArchiveProvider(
-                pRegisterReceiver, pTileSource,pArchives);//注册文件
-        mTileProviderList.add(archiveProvider);
-
-        mTileProviderList.add(archiveProvider);
-        final TileDBWriter tileDBWriter = new TileDBWriter();
-        final MapTileDownloader mapTileDownloader = new MapTileDownloader(pTileSource, tileDBWriter, aNetworkAvailablityCheck);
-        mTileProviderList.add(mapTileDownloader);
     }
 }
