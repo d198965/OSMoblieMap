@@ -1,7 +1,7 @@
 package org.osmdroid.samplefragments;
 
 import org.osmdroid.util.BoundingBoxE6;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.Projection;
 import org.osmdroid.views.drawing.OsmPath;

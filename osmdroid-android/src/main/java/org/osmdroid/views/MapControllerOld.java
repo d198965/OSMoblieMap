@@ -6,7 +6,7 @@ import microsoft.mappoint.TileSystem;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.BoundingBoxE6;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.views.util.MyMath;
 import org.osmdroid.views.util.constants.MapViewConstants;
 import org.osmdroid.views.util.constants.MathConstants;

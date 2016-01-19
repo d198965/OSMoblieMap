@@ -7,6 +7,7 @@ import static org.osmdroid.util.MyMath.gudermannInverse;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.views.util.constants.MapViewConstants;
 

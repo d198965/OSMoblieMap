@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.ResourceProxyImpl;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlay;

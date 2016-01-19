@@ -31,7 +31,7 @@ public class SQLLocalStorageManager implements ILocalStorage {
 
     private static String S_COLUMN = "s";
 
-    private static String P_COLUMN = "provider"; //sourcename
+    private static String P_COLUMN = "provider"; //source name
 
     private static String UPDATE_TIME_COLUMN = "updatetime";
 
@@ -255,8 +255,7 @@ public class SQLLocalStorageManager implements ILocalStorage {
         double maxTileX = Math.pow(2, (double) zoom);
         int tilex = (int) (((1 - res / maxLong) / 2) * (maxTileX));
 
-        MapTile theMapTile = new MapTile(tilex, tiley, zoom);
-        return theMapTile;
+        return new MapTile(tilex, tiley, zoom);
     }
 
     /**

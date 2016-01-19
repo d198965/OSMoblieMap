@@ -3,7 +3,7 @@ package org.osmdroid.views.overlay;
 
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.Projection;
 

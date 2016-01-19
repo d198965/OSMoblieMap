@@ -1,4 +1,4 @@
-package org.osmdroid.tileprovider.modules;
+package org.osmdroid;
 
 import java.util.concurrent.ThreadFactory;
 

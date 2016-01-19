@@ -31,7 +31,7 @@ import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.SimpleInvalidationHandler;
 import org.osmdroid.util.BoundingBoxE6;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.util.GeometryMath;
 import org.osmdroid.views.overlay.DefaultOverlayManager;
 import org.osmdroid.views.overlay.Overlay;
@@ -1033,6 +1033,7 @@ public class MapView extends ViewGroup implements IMapView, MapViewConstants,
 		if (this.isAnimating()) {
 			// Zoom animations use the mMultiTouchScale variables to perform their animations so we
 			// don't want to step on that.
+			// todo select操作
 			return null;
 		} else {
 			mMultiTouchScalePoint.x = pt.getX();

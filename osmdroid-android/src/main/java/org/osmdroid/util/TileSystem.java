@@ -2,6 +2,8 @@ package org.osmdroid.util;
 
 import android.graphics.Point;
 
+import org.osmdroid.api.GeoPoint;
+
 /**
  * Proxy class for TileSystem. For coordinate conversions (tile to lat/lon and reverse) TileSystem
  * only accepts input parameters within certain ranges and crops any values outside of it. For

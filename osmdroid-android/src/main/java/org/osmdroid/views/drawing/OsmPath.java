@@ -1,6 +1,6 @@
 package org.osmdroid.views.drawing;
 
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.views.Projection;
 
 import android.graphics.Path;

@@ -2,13 +2,16 @@ package org.osmdroid.views.overlay.mylocation;
 
 import org.osmdroid.util.NetworkLocationIgnorer;
 
+import android.Manifest;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-public class GpsMyLocationProvider implements IMyLocationProvider, LocationListener {
+import com.os.common.requestpermission.utils.PermissionCheckHelper;
+
+public class GpsMyLocationProvider implements IMyLocationProvider, LocationListener,PermissionCheckHelper.PermissionCallbackListener {
 	private final LocationManager mLocationManager;
 	private Location mLocation;
 
@@ -16,9 +19,14 @@ public class GpsMyLocationProvider implements IMyLocationProvider, LocationListe
 	private long mLocationUpdateMinTime = 0;
 	private float mLocationUpdateMinDistance = 0.0f;
 	private final NetworkLocationIgnorer mIgnorer = new NetworkLocationIgnorer();
+	PermissionCheckHelper permissionCheckHelper = PermissionCheckHelper.instance();
+	private Context mContext;
 
+	private static final int START_LOCATION_PROVIDER_REQUEST_CODE = 1;
+	private boolean mIsLocationGrandted = false;
 	public GpsMyLocationProvider(Context context) {
 		mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		mContext = context;
 	}
 
 	// ===========================================================
@@ -69,12 +77,22 @@ public class GpsMyLocationProvider implements IMyLocationProvider, LocationListe
 	public boolean startLocationProvider(IMyLocationConsumer myLocationConsumer) {
 		mMyLocationConsumer = myLocationConsumer;
 		boolean result = false;
-		for (final String provider : mLocationManager.getProviders(true)) {
-			if (LocationManager.GPS_PROVIDER.equals(provider)
-					|| LocationManager.NETWORK_PROVIDER.equals(provider)) {
-				result = true;
-				mLocationManager.requestLocationUpdates(provider, mLocationUpdateMinTime,
-						mLocationUpdateMinDistance, this);
+
+		mIsLocationGrandted = PermissionCheckHelper.isPermissionGranted(mContext,Manifest.permission.ACCESS_FINE_LOCATION);
+		if (!mIsLocationGrandted){
+			String []locationPermission = {Manifest.permission.ACCESS_FINE_LOCATION};
+			String [] messages = {"无定位权限影响应用正常运行"};
+			permissionCheckHelper.requestPermissions(mContext,START_LOCATION_PROVIDER_REQUEST_CODE,locationPermission,messages,this);
+		}
+
+		if (mIsLocationGrandted){
+			for (final String provider : mLocationManager.getProviders(true)) {
+				if (LocationManager.GPS_PROVIDER.equals(provider)
+						|| LocationManager.NETWORK_PROVIDER.equals(provider)) {
+					result = true;
+					mLocationManager.requestLocationUpdates(provider, mLocationUpdateMinTime,
+							mLocationUpdateMinDistance, this);
+				}
 			}
 		}
 		return result;
@@ -83,7 +101,10 @@ public class GpsMyLocationProvider implements IMyLocationProvider, LocationListe
 	@Override
 	public void stopLocationProvider() {
 		mMyLocationConsumer = null;
-		mLocationManager.removeUpdates(this);
+		// 在这里无需在请求权限
+		if (mIsLocationGrandted){
+			mLocationManager.removeUpdates(this);
+		}
 	}
 
 	@Override
@@ -116,5 +137,13 @@ public class GpsMyLocationProvider implements IMyLocationProvider, LocationListe
 
 	@Override
 	public void onStatusChanged(final String provider, final int status, final Bundle extras) {
+
+	}
+
+	@Override
+	public void onPermissionCheckCallback(int i, String[] strings, int[] ints) {
+		if (i == START_LOCATION_PROVIDER_REQUEST_CODE){
+			mIsLocationGrandted = PermissionCheckHelper.isPermissionGranted(mContext,Manifest.permission.ACCESS_FINE_LOCATION);
+		}
 	}
 }

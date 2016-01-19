@@ -3,7 +3,7 @@ package org.osmdroid.views.util;
 import java.util.List;
 
 import org.osmdroid.util.BoundingBoxE6;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.Projection;
 

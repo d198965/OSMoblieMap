@@ -1,4 +1,4 @@
-package org.osmdroid.util;
+package org.osmdroid.api;
 
 import org.osmdroid.api.IPosition;
 

@@ -4,7 +4,7 @@ package org.osmdroid.views;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IProjection;
 import org.osmdroid.util.BoundingBoxE6;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.util.constants.MapViewConstants;
 

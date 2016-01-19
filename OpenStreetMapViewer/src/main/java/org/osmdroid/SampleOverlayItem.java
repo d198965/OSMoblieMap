@@ -1,6 +1,6 @@
 package org.osmdroid;
 
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import android.graphics.Canvas;

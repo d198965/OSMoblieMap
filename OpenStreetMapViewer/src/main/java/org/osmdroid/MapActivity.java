@@ -4,7 +4,9 @@ package org.osmdroid;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
@@ -24,6 +26,7 @@ public class MapActivity extends FragmentActivity
     // Constructors
     // ===========================================================
     /** Called when the activity is first created. */
+
     @Override
     public void onCreate(final Bundle savedInstanceState)
     {

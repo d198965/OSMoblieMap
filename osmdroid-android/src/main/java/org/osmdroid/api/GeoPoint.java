@@ -1,9 +1,8 @@
 // Created by plusminus on 21:28:12 - 25.09.2008
-package org.osmdroid.util;
+package org.osmdroid.api;
 
 import java.io.Serializable;
 
-import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.constants.GeoConstants;
 import org.osmdroid.views.util.constants.MathConstants;
 

@@ -18,8 +18,11 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.PixelFormat;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.DisplayMetrics;
@@ -63,7 +66,8 @@ public class MapFragment extends Fragment implements OpenStreetMapConstants {
      private RotationGestureOverlay mRotationGestureOverlay;
      private ResourceProxy mResourceProxy;
 
-     public static MapFragment newInstance() {
+
+    public static MapFragment newInstance() {
           MapFragment fragment = new MapFragment();
           return fragment;
      }
@@ -81,6 +85,16 @@ public class MapFragment extends Fragment implements OpenStreetMapConstants {
           // setHardwareAccelerationOff();
          //TODO leak
          StreetMapApplication.getRefWatcher(getContext()).watch(mMapView);
+         //绘制GL
+//         GLRender render = new GLRender();
+//         GLSurfaceView gview;
+//         gview = new GLSurfaceView(getContext());
+//         gview.setZOrderOnTop(true);
+//         gview.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+//         gview.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+//         gview.setRenderer(render);
+//         mMapView.addView(gview);
+
           return mMapView;
      }
 

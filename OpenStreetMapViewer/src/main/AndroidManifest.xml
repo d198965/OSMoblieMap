@@ -79,7 +79,11 @@
 				<category android:name="android.intent.category.DEFAULT"></category>
 			</intent-filter>
 		</activity>
-
+		<activity
+			android:name="com.os.common.requestpermission.permission.PermissionHandlerActivity"
+			android:configChanges="orientation|keyboardHidden"
+			android:screenOrientation="nosensor">
+		</activity>
 	</application>
 
 </manifest>

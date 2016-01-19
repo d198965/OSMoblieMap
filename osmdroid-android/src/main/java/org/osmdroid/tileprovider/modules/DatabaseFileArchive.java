@@ -24,7 +24,7 @@ public class DatabaseFileArchive implements IArchiveFile {
 	private SQLLocalStorageManager sqlLocalStorageManager;
 
 	public DatabaseFileArchive(){
-		sqlLocalStorageManager = SQLLocalStorageManager.getInstance(OpenStreetMapTileProviderConstants.TILE_DB_PATH);
+
 	}
 
 	private DatabaseFileArchive(File pFile) {
@@ -32,7 +32,6 @@ public class DatabaseFileArchive implements IArchiveFile {
 	}
 
 	public static DatabaseFileArchive getDatabaseFileArchive(final File pFile) throws SQLiteException {
-		//return new DatabaseFileArchive(SQLiteDatabase.openOrCreateDatabase(pFile, null));
 		return new DatabaseFileArchive(pFile);
 
 	}
@@ -50,6 +49,9 @@ public class DatabaseFileArchive implements IArchiveFile {
 	@Override
 	public void init(File pFile) throws Exception {
 		sqlLocalStorageManager = SQLLocalStorageManager.getInstance(pFile);
+		if (sqlLocalStorageManager == null){
+			SQLLocalStorageManager.getInstance(OpenStreetMapTileProviderConstants.TILE_DB_PATH);
+		}
 	}
 
 	@Override
@@ -64,7 +66,9 @@ public class DatabaseFileArchive implements IArchiveFile {
 
 	@Override
 	public void close() {
-		sqlLocalStorageManager.resetLocalStorage();
+		if (sqlLocalStorageManager != null){
+			sqlLocalStorageManager.resetLocalStorage();
+		}
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import org.osmdroid.api.IGeoPoint;
 /**
  * A wrapper for the Google {@link com.google.android.maps.GeoPoint} class.
  * This implements {@link IGeoPoint}, which is also implemented by the osmdroid
- * {@link org.osmdroid.util.GeoPoint}.
+ * {@link org.osmdroid.api.GeoPoint}.
  *
  * @author Neil Boyd
  *

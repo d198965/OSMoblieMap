@@ -31,5 +31,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.8.2'
     //compile(group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.0.1') {}
     //compile(group: 'org.apache.james', name: 'apache-mime4j', version: '0.6') {}
+    compile files ('/Users/zdh/Desktop/AndroidDeveloper/OtherJar/common/permissionrequest.jar')
     compile 'com.android.support:support-v4:23.1.1'
 }

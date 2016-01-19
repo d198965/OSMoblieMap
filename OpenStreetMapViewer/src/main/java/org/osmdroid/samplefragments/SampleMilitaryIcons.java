@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.MinimapOverlay;

@@ -3,7 +3,7 @@ package org.osmdroid.views.util;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.BoundingBoxE6;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.GeoPoint;
 import org.osmdroid.views.util.constants.MapViewConstants;
 
 import android.graphics.Point;
