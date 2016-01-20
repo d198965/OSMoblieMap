@@ -29,6 +29,16 @@ public class Projection implements IProjection {
 	}
 
 	@Override
+	public Point toPixels(double longitude, double latitude, Point reuse) {
+		final LatLng latLng = new LatLng(latitude, longitude);
+		final Point point = mProjection.toScreenLocation(latLng);
+		if (reuse != null) {
+			reuse.x = point.x;
+			reuse.y = point.y;
+		}
+		return reuse;
+	}
+	@Override
 	public IGeoPoint fromPixels(final int x, final int y) {
 		mPoint.x = x;
 		mPoint.y = y;

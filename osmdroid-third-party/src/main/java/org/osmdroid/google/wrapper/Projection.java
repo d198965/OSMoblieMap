@@ -5,10 +5,12 @@ import org.osmdroid.api.IProjection;
 
 import android.graphics.Point;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * A wrapper for the Google {@link com.google.android.maps.Projection} implementation.
  * This implements {@link IProjection}, which is also implemented by the osmdroid
- * {@link org.osmdroid.views.MapView.Projection}.
+ * 
  *
  * @author Neil Boyd
  *
@@ -33,10 +35,18 @@ public class Projection implements IProjection {
 	}
 
 	@Override
+	public Point toPixels(double longitude, double latitude, Point reuse) {
+		final com.google.android.maps.GeoPoint googleGeoPoint =
+				new com.google.android.maps.GeoPoint((int)latitude, (int)longitude);
+		return mProjection.toPixels(googleGeoPoint, reuse);
+	}
+
+	@Override
 	public IGeoPoint fromPixels(final int x, final int y) {
 		final com.google.android.maps.GeoPoint googleGeoPoint = mProjection.fromPixels(x, y);
 		return new GeoPoint(googleGeoPoint);
 	}
+
 
 	@Override
 	public float metersToEquatorPixels(final float meters) {

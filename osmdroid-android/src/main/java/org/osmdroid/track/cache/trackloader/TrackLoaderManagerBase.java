@@ -14,7 +14,7 @@ import java.util.Set;
 
 /**
  * Created by zdh on 16/1/3.
- * MapTileProviderBase
+ * Track加载管理，可以是远程、也可以是本地
  */
 public abstract class TrackLoaderManagerBase {
     private static String TAG = "TrackLoaderManagerBase";
@@ -22,7 +22,7 @@ public abstract class TrackLoaderManagerBase {
 
     final TrackInfoLooper mTrackLooper;
 
-    interface ITrackLoaderListener {
+    public interface ITrackLoaderListener {
         void loadTrackSuccess(ITrackPath trackPath, ITrackInfo trackInfo);
 
         void loadTrackFail(String message, ITrackInfo trackInfo);
@@ -36,7 +36,7 @@ public abstract class TrackLoaderManagerBase {
     // 异步 回调
     public abstract void loadTrack(ITrackInfo trackInfo);
 
-    public void detach() {
+    public void onDetach() {
         if (mTrackCache != null) {
             mTrackCache.clear();
         }
@@ -52,7 +52,7 @@ public abstract class TrackLoaderManagerBase {
         mTrackLoaderListener = trackLoaderListener;
     }
 
-    public void loadTrackSuccess(ITrackPath trackPath, ITrackInfo trackInfo) {
+    protected void loadTrackSuccess(ITrackPath trackPath, ITrackInfo trackInfo) {
         if (trackPath != null && trackInfo != null) {
             putTrackIntoCache(trackInfo, trackPath);
             Log.i(TAG, "requestsuccess:" + trackPath.getTrackName());
@@ -63,7 +63,7 @@ public abstract class TrackLoaderManagerBase {
         }
     }
 
-    public void loadTrackFail(String message, ITrackInfo trackInfo) {
+    protected void loadTrackFail(String message, ITrackInfo trackInfo) {
         if (trackInfo != null) {
             Log.e(TAG, "onRequestFailed:" + trackInfo.toString() + ":" + message);
         }
@@ -72,11 +72,11 @@ public abstract class TrackLoaderManagerBase {
         }
     }
 
-    public void requestInfoTrackFail(String message,Object requestObject) {
+    protected void requestInfoTrackFail(String message,Object requestObject) {
         Log.e(TAG,message);
     }
 
-    public void requestInfoTrackSuccess(List<ITrackInfo> trackInfos,Object requestObject) {
+    protected void requestInfoTrackSuccess(List<ITrackInfo> trackInfos,Object requestObject) {
         mTrackLooper.loop(trackInfos);
     }
 

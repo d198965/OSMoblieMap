@@ -108,6 +108,15 @@ public class Projection implements IProjection, MapViewConstants {
 		return out;
 	}
 
+	@Override
+	public Point toPixels(double longitude, double latitude, Point reuse) {
+		Point out = TileSystem.LatLongToPixelXY(latitude, longitude,
+				getZoomLevel(), reuse);
+		out = toPixelsFromMercator(out.x, out.y, out);
+		out = adjustForDateLine(out.x, out.y, out);
+		return out;
+	}
+
 	protected Point adjustForDateLine(int x, int y, Point reuse) {
 		final Point out = reuse != null ? reuse : new Point();
 		out.set(x, y);

@@ -20,6 +20,7 @@ public final class SampleFactory {
                     new SampleInvertedTiles_NightMode(), new SampleOfflineOnly(),
                     new SampleAlternateCacheDir(),
                     new SampleMilitaryIcons(),
+					new SampleTrackLoaderTest(),
                     new SampleMapBox(),
 					new SampleJumboCache(),
                     new SampleCustomTileSource()};

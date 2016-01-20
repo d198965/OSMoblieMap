@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by zdh on 16/1/4.
+ * 从本地加载Track
  */
 public class TrackLoaderManager extends TrackLoaderManagerBase implements ITrackRequstListener,ITrackInfoRequestListener {
     protected final HashMap<ITrackInfo, TrackRequestState> mWorking;
@@ -154,7 +155,7 @@ public class TrackLoaderManager extends TrackLoaderManagerBase implements ITrack
     }
 
     @Override
-    public void detach() {
+    public void onDetach() {
         for (int k = 0; mTrackLoaders != null && k < mTrackLoaders.size(); k++) {
             mTrackLoaders.get(k).detach();
         }

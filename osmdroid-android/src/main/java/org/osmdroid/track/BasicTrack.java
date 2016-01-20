@@ -3,6 +3,7 @@ package org.osmdroid.track;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,6 +12,7 @@ import org.osmdroid.pysicalmap.render.SimpleRender;
 import org.osmdroid.shape.Feature.IFeature;
 import org.osmdroid.shape.geom.CShape;
 import org.osmdroid.shape.geom.Line;
+import org.osmdroid.views.Projection;
 
 /**
  * Created by zdh on 15/12/18.
@@ -23,15 +25,17 @@ public class BasicTrack extends Line implements ITrackPath<BasicTrackPoint> {
     private BasicTrackPoint[] mTrackPoints;
     private int mFID;
 
-    public BasicTrack(int fid,String trackName){
+    public BasicTrack(int fid, String trackName) {
         this.mFID = fid;
         mTrackInfo = new BasicTrackInfo(trackName);
     }
-    public BasicTrack (int fid,BasicTrackPoint[] trackPoints,BasicTrackInfo trackInfo){
+
+    public BasicTrack(int fid, BasicTrackPoint[] trackPoints, BasicTrackInfo trackInfo) {
         this.mFID = fid;
         this.mTrackPoints = trackPoints;
         this.mTrackInfo = trackInfo;
     }
+
     public BasicTrack(int fid, String trackName, String description, boolean isVisible, BasicTrackPoint[] trackPoints, boolean isLike) {
         mTrackInfo = new BasicTrackInfo(trackName);
         mTrackInfo.setDescription(description);
@@ -132,44 +136,48 @@ public class BasicTrack extends Line implements ITrackPath<BasicTrackPoint> {
     /**
      */
     @Override
-    public void onDraw(Canvas canvas, SimpleRender render, CoorT coorT) {
+    public void onDraw(Canvas canvas, SimpleRender render, Projection coorT) {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(render.getOuterLineWidth());
         paint.setColor(render.getOuterLineColor());
-        float []points = new float[6];
+        float[] points = new float[6];
         // 考虑OPenGL绘制
         Path temNewPath = new Path();
-        for (int i = 1; i < mTrackPoints.length-1; i++) {
-            float speed = (mTrackPoints[i-1].getSpeed()+mTrackPoints[i].getSpeed())/2;
-            if(i==1)
-            {
+        Point pixelPoint = new Point();
+        for (int i = 1; i < mTrackPoints.length - 1; i++) {
+            float speed = (mTrackPoints[i - 1].getSpeed() + mTrackPoints[i].getSpeed()) / 2;
+            if (i == 1) {
                 ITrackPoint temPoint1 = mTrackPoints[0];
-                points[0]=(float)(((temPoint1.getX()-coorT.startX)/coorT.blC));
-                points[1]=(float)(coorT.picHigh-((temPoint1.getY()-coorT.startY)/coorT.blC));
+                pixelPoint = coorT.toPixels(temPoint1.getX(), temPoint1.getY(), null);
+                points[0] = pixelPoint.x;
+                points[1] = pixelPoint.y;
                 ITrackPoint temPoint2 = mTrackPoints[1];
-                points[2] = (float)(((temPoint2.getX()-coorT.startX)/coorT.blC));
-                points[3] = (float)(coorT.picHigh-((temPoint2.getY()-coorT.startY)/coorT.blC));
+                pixelPoint = coorT.toPixels(temPoint1.getX(), temPoint1.getY(), pixelPoint);
+                points[2] = pixelPoint.x;
+                points[3] = pixelPoint.y;
             }
-            ITrackPoint stopPoint = mTrackPoints[i+1];
-            points[4]=(float)(((stopPoint.getX()-coorT.startX)/coorT.blC));
-            points[5]=(float)(coorT.picHigh-((stopPoint.getY()-coorT.startY)/coorT.blC));
+            ITrackPoint stopPoint = mTrackPoints[i + 1];
+            pixelPoint = coorT.toPixels(stopPoint.getX(), stopPoint.getY(), pixelPoint);
+            points[4] = pixelPoint.x;
+            points[5] = pixelPoint.y;
             temNewPath.reset();
-            temNewPath.moveTo(points[0],points[1]);
-            temNewPath.lineTo(points[2],points[3]);
-            temNewPath.lineTo(points[4],points[5]);
+            temNewPath.moveTo(points[0], points[1]);
+            temNewPath.lineTo(points[2], points[3]);
+            temNewPath.lineTo(points[4], points[5]);
             canvas.drawPath(temNewPath, paint);
             points[0] = points[2];
             points[1] = points[3];
-            points[2] =points[4];
+            points[2] = points[4];
             points[3] = points[5];
         }
 
         paint.setStrokeWidth(2);
         paint.setColor(render.getTheColor());
         for (ITrackPoint trackPoint : mTrackPoints) {
-            float X=(float)((trackPoint.getX()-coorT.startX)/coorT.blC);
-            float Y=(float)(coorT.picHigh-(trackPoint.getY()-coorT.startY)/coorT.blC);
+            pixelPoint = coorT.toPixels(trackPoint.getX(), trackPoint.getY(), pixelPoint);
+            float X = pixelPoint.x;
+            float Y = pixelPoint.y;
             canvas.drawCircle(X, Y, 5, paint);
         }
     }
@@ -220,6 +228,7 @@ public class BasicTrack extends Line implements ITrackPath<BasicTrackPoint> {
                     }
                     return new BasicTrack(fid, trackPoints, trackInfo);
                 }
+
                 @Override
                 public BasicTrack[] newArray(int size) {
                     return new BasicTrack[size];
@@ -234,7 +243,7 @@ public class BasicTrack extends Line implements ITrackPath<BasicTrackPoint> {
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeInt(mFID);
-        mTrackInfo.writeToParcel(parcel,flags);
+        mTrackInfo.writeToParcel(parcel, flags);
         if (mTrackPoints == null) {
             parcel.writeInt(0);
             parcel.writeByteArray(new byte[0]);

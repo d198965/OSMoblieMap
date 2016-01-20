@@ -23,6 +23,8 @@ public interface IProjection {
 	 */
 	Point toPixels(IGeoPoint in, Point out);
 
+	Point toPixels(double longitude,double latitude, Point out);
+
 	/**
 	 * Create a new GeoPoint from pixel coordinates relative to the top-left of the MapView that
 	 * provided this PixelConverter.
