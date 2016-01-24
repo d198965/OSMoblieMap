@@ -181,10 +181,17 @@ public class Line extends AbstractShape {
 
     // 应按照顺序添加点
     protected void addPoint(double x,double y,double z){
-        collection.add(new CPoint(x,y,z));
+        add(new CPoint(x,y,z));
     }
 
-    public boolean hitTest( double x, double y, double offset )
+    @Override
+    public void add(Object object) {
+        if (object instanceof CPoint){
+            super.add(object);
+        }
+    }
+
+    public boolean hitTest(double x, double y, double offset )
     {
         return this.getWrapRing( offset ).contains( x, y );
     }

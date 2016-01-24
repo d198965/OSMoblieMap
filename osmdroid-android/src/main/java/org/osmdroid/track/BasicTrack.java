@@ -10,20 +10,30 @@ import android.os.Parcelable;
 import org.osmdroid.pysicalmap.CoorT;
 import org.osmdroid.pysicalmap.render.SimpleRender;
 import org.osmdroid.shape.Feature.IFeature;
+import org.osmdroid.shape.geom.CPoint;
 import org.osmdroid.shape.geom.CShape;
+import org.osmdroid.shape.geom.Extent;
 import org.osmdroid.shape.geom.Line;
+import org.osmdroid.shape.util.CIterator;
 import org.osmdroid.views.Projection;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by zdh on 15/12/18.
  */
-public class BasicTrack extends Line implements ITrackPath<BasicTrackPoint> {
+public class BasicTrack implements ITrackPath<BasicTrackPoint> {
     BasicTrackInfo mTrackInfo;
     private double mLength;
     private double mAverageSpeed;
     private double mDZ;// 总高差
-    private BasicTrackPoint[] mTrackPoints;
+    private List<BasicTrackPoint> mTrackPoints = new ArrayList<>();
     private int mFID;
+
+    private Extent mExtent;
 
     public BasicTrack(int fid, String trackName) {
         this.mFID = fid;
@@ -32,37 +42,39 @@ public class BasicTrack extends Line implements ITrackPath<BasicTrackPoint> {
 
     public BasicTrack(int fid, BasicTrackPoint[] trackPoints, BasicTrackInfo trackInfo) {
         this.mFID = fid;
-        this.mTrackPoints = trackPoints;
+        if (trackPoints != null) {
+            this.mTrackPoints =new ArrayList<>(Arrays.asList(trackPoints));
+        }
         this.mTrackInfo = trackInfo;
+        this.generateAttrs();
     }
 
     public BasicTrack(int fid, String trackName, String description, boolean isVisible, BasicTrackPoint[] trackPoints, boolean isLike) {
-        mTrackInfo = new BasicTrackInfo(trackName);
+        this(fid,trackName);
         mTrackInfo.setDescription(description);
         mTrackInfo.setLike(isLike);
         mTrackInfo.setVisible(isVisible);
-        this.mTrackPoints = trackPoints;
+        this.mTrackPoints = Arrays.asList(trackPoints);
         this.mFID = fid;
         this.generateAttrs();
     }
 
     private void generateAttrs() {
-        if (mTrackPoints == null || mTrackPoints.length <= 0) {
+        if (mTrackPoints == null || mTrackPoints.size() <= 0) {
             return;
         }
         mAverageSpeed = 0;
-        for (int k = 0; k < mTrackPoints.length; k++) {
-            addPoint(mTrackPoints[k].getX(), mTrackPoints[k].getY(), mTrackPoints[k].getAltitude());
-            if (isSpeedInvalid(mTrackPoints[k].getSpeed())) {
-                mAverageSpeed += mTrackPoints[k].getSpeed() / mTrackPoints.length; // 可能会小于mTrackPoints.length
+        for (int k = 0; k < mTrackPoints.size(); k++) {
+            if (isSpeedInvalid(mTrackPoints.get(k).getSpeed())) {
+                mAverageSpeed += mTrackPoints.get(k).getSpeed() / mTrackPoints.size(); // 可能会小于mTrackPoints.length
             }
-            if (k > 0 && mTrackPoints[k].getAltitude() > mTrackPoints[k - 1].getAltitude()) {
-                mDZ += mTrackPoints[k].getAltitude() - mTrackPoints[k - 1].getAltitude();
-                mLength += mTrackPoints[k].distanceTo(mTrackPoints[k - 1]);
+            if (k > 0 && mTrackPoints.get(k).getAltitude() > mTrackPoints.get(k - 1).getAltitude()) {
+                mDZ += mTrackPoints.get(k).getAltitude() - mTrackPoints.get(k - 1).getAltitude();
+                mLength += mTrackPoints.get(k).distanceTo(mTrackPoints.get(k - 1));
             }
         }
-        mTrackInfo.setStartTime(mTrackPoints[0].getTime());
-        mTrackInfo.setEndTime(mTrackPoints[mTrackPoints.length - 1].getTime());
+        mTrackInfo.setStartTime(mTrackPoints.get(0).getTime());
+        mTrackInfo.setEndTime(mTrackPoints.get(mTrackPoints.size() - 1).getTime());
     }
 
     public static boolean isSpeedInvalid(double speed) {
@@ -130,7 +142,10 @@ public class BasicTrack extends Line implements ITrackPath<BasicTrackPoint> {
 
     @Override
     public BasicTrackPoint[] getTrackPoints() {
-        return mTrackPoints;
+        if (mTrackPoints == null || mTrackPoints.size()<=0){
+            return null;
+        }
+        return mTrackPoints.toArray(new BasicTrackPoint[mTrackPoints.size()]);
     }
 
     /**
@@ -141,41 +156,52 @@ public class BasicTrack extends Line implements ITrackPath<BasicTrackPoint> {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(render.getOuterLineWidth());
         paint.setColor(render.getOuterLineColor());
-        float[] points = new float[6];
         // 考虑OPenGL绘制
         Path temNewPath = new Path();
         Point pixelPoint = new Point();
-        for (int i = 1; i < mTrackPoints.length - 1; i++) {
-            float speed = (mTrackPoints[i - 1].getSpeed() + mTrackPoints[i].getSpeed()) / 2;
-            if (i == 1) {
-                ITrackPoint temPoint1 = mTrackPoints[0];
-                pixelPoint = coorT.toPixels(temPoint1.getX(), temPoint1.getY(), null);
-                points[0] = pixelPoint.x;
-                points[1] = pixelPoint.y;
-                ITrackPoint temPoint2 = mTrackPoints[1];
-                pixelPoint = coorT.toPixels(temPoint1.getX(), temPoint1.getY(), pixelPoint);
-                points[2] = pixelPoint.x;
-                points[3] = pixelPoint.y;
+        Point prePixelPoint = new Point();
+//        for (int i = 1; i < mTrackPoints.size() - 1; i++) {
+//            float speed = (mTrackPoints.get(i - 1).getSpeed() + mTrackPoints.get(i).getSpeed()) / 2;
+//            if (i == 1) {
+//                BasicTrackPoint temPoint1 = mTrackPoints.get(0);
+//                pixelPoint = coorT.toPixels(temPoint1.getLongitude(), temPoint1.getLatitude(), null);
+//                points[0] = pixelPoint.x;
+//                points[1] = pixelPoint.y;
+//                BasicTrackPoint temPoint2 = mTrackPoints.get(1);
+//                pixelPoint = coorT.toPixels(temPoint2.getLongitude(), temPoint2.getLatitude(), pixelPoint);
+//                points[2] = pixelPoint.x;
+//                points[3] = pixelPoint.y;
+//            }
+//            BasicTrackPoint stopPoint = mTrackPoints.get(i + 1);
+//            pixelPoint = coorT.toPixels(stopPoint.getLongitude(), stopPoint.getLatitude(), pixelPoint);
+//            points[4] = pixelPoint.x;
+//            points[5] = pixelPoint.y;
+//            temNewPath.reset();
+//            temNewPath.moveTo(points[0], points[1]);
+//            temNewPath.lineTo(points[2], points[3]);
+//            temNewPath.lineTo(points[4], points[5]);
+//            canvas.drawPath(temNewPath, paint);
+//            points[0] = points[2];
+//            points[1] = points[3];
+//            points[2] = points[4];
+//            points[3] = points[5];
+//        }
+
+        for (int i = 0; i < mTrackPoints.size(); i++) {
+            pixelPoint = coorT.toPixels(mTrackPoints.get(i).getLongitude(), mTrackPoints.get(i).getLatitude(), null);
+            if (i == 0) {
+                temNewPath.moveTo(pixelPoint.x, pixelPoint.y);
+            } else {
+                temNewPath.quadTo(prePixelPoint.x, prePixelPoint.y, pixelPoint.x, pixelPoint.y);
             }
-            ITrackPoint stopPoint = mTrackPoints[i + 1];
-            pixelPoint = coorT.toPixels(stopPoint.getX(), stopPoint.getY(), pixelPoint);
-            points[4] = pixelPoint.x;
-            points[5] = pixelPoint.y;
-            temNewPath.reset();
-            temNewPath.moveTo(points[0], points[1]);
-            temNewPath.lineTo(points[2], points[3]);
-            temNewPath.lineTo(points[4], points[5]);
-            canvas.drawPath(temNewPath, paint);
-            points[0] = points[2];
-            points[1] = points[3];
-            points[2] = points[4];
-            points[3] = points[5];
+            prePixelPoint.set(pixelPoint.x, pixelPoint.y);
         }
+        canvas.drawPath(temNewPath, paint);
 
         paint.setStrokeWidth(2);
         paint.setColor(render.getTheColor());
-        for (ITrackPoint trackPoint : mTrackPoints) {
-            pixelPoint = coorT.toPixels(trackPoint.getX(), trackPoint.getY(), pixelPoint);
+        for (BasicTrackPoint trackPoint : mTrackPoints) {
+            pixelPoint = coorT.toPixels(trackPoint.getLongitude(), trackPoint.getLatitude(), pixelPoint);
             float X = pixelPoint.x;
             float Y = pixelPoint.y;
             canvas.drawCircle(X, Y, 5, paint);
@@ -184,8 +210,54 @@ public class BasicTrack extends Line implements ITrackPath<BasicTrackPoint> {
 
     @Override
     public CShape getGeomtry() {
-        return this;
+        Line myLine = new Line();
+        for (BasicTrackPoint temPoint : mTrackPoints) {
+            myLine.add(new CPoint(temPoint.getX(), temPoint.getY(), temPoint.getAltitude()));
+        }
+        return myLine;
     }
+
+    @Override
+    public Extent getExtent() {
+        if (mExtent == null) {
+            double minx = Double.MAX_VALUE;
+            double miny = Double.MAX_VALUE;
+            double maxx = -Double.MAX_VALUE;
+            double maxy = -Double.MAX_VALUE;
+            double minz = Double.MAX_VALUE;
+            double maxz = -Double.MAX_VALUE;
+            double tempX;
+            double tempY;
+            double tempZ;
+            for (BasicTrackPoint temPoint : mTrackPoints) {
+                tempX = temPoint.getX();
+                tempY = temPoint.getY();
+                tempZ = temPoint.getAltitude();
+                minx = minx > tempX ? tempX : minx;
+                miny = miny > tempY ? tempY : miny;
+                maxx = maxx < tempX ? tempX : maxx;
+                maxy = maxy < tempY ? tempY : maxy;
+                minz = minz > tempZ ? tempZ : minz;
+                maxz = maxz < tempZ ? tempZ : maxz;
+            }
+            mExtent = new Extent(new CPoint(minx, miny, minz), new CPoint(minx, miny, minz));
+        }
+
+        return mExtent;
+    }
+
+    public void addTrackPoint(BasicTrackPoint temTrackPoint) {
+        if (temTrackPoint != null) {
+            mTrackPoints.add(temTrackPoint);
+        }
+    }
+
+    public void removeTrackPoint(BasicTrackPoint temTrackPoint) {
+        if (temTrackPoint != null && mTrackPoints != null) {
+            mTrackPoints.remove(temTrackPoint);
+        }
+    }
+
 
     @Override
     public Object getFieldValue(int index) {
@@ -248,9 +320,9 @@ public class BasicTrack extends Line implements ITrackPath<BasicTrackPoint> {
             parcel.writeInt(0);
             parcel.writeByteArray(new byte[0]);
         } else {
-            parcel.writeInt(mTrackPoints.length);
-            for (int i = 0; i < mTrackPoints.length; i++) {
-                mTrackPoints[i].writeToParcel(parcel, flags);
+            parcel.writeInt(mTrackPoints.size());
+            for (int i = 0; i < mTrackPoints.size(); i++) {
+                mTrackPoints.get(i).writeToParcel(parcel, flags);
             }
         }
     }

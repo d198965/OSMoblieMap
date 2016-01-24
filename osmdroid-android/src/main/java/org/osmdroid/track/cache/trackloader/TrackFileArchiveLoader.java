@@ -15,12 +15,12 @@ import java.util.List;
  */
 public class TrackFileArchiveLoader extends TrackFileStorageLoaderBase {
     private static String TAG = "TrackFileArchiveLoader";
-    private final ArrayList<IArchiveTrack> mArchiveFiles = new ArrayList<IArchiveTrack>();
+    private final ArrayList<AbstractArchiveTrack> mArchiveFiles = new ArrayList<AbstractArchiveTrack>();
 
     public TrackFileArchiveLoader(IRegisterReceiver pRegisterReceiver, int pThreadPoolSize,
-                                  int pPendingQueueSize, @NonNull ArrayList<IArchiveTrack> archiveTracks) {
+                                  int pPendingQueueSize, @NonNull ArrayList<AbstractArchiveTrack> archiveTracks) {
         super(pRegisterReceiver, pThreadPoolSize, pPendingQueueSize);
-        for (IArchiveTrack temArchiveTrack : archiveTracks) {
+        for (AbstractArchiveTrack temArchiveTrack : archiveTracks) {
             mArchiveFiles.add(temArchiveTrack);
         }
     }
@@ -38,7 +38,7 @@ public class TrackFileArchiveLoader extends TrackFileStorageLoaderBase {
     @Override
     public void detach() {
         while (!mArchiveFiles.isEmpty()) {
-            IArchiveTrack t = mArchiveFiles.get(0);
+            AbstractArchiveTrack t = mArchiveFiles.get(0);
             if (t != null)
                 mArchiveFiles.get(0).close();
             mArchiveFiles.remove(0);

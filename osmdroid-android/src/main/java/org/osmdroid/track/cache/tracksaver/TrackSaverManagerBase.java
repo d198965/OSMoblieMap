@@ -1,5 +1,6 @@
 package org.osmdroid.track.cache.tracksaver;
 
+import org.osmdroid.track.ITrackInfo;
 import org.osmdroid.track.ITrackPath;
 import org.osmdroid.track.ITrackPoint;
 
@@ -8,11 +9,17 @@ import org.osmdroid.track.ITrackPoint;
  */
 public interface TrackSaverManagerBase<T extends ITrackPath,P extends ITrackPoint>{
 
-    void saveTrack(T trackPath);
+    boolean saveTrack(T trackPath);
+
+    boolean saveTrack(String trackName);// 存储temptrack
 
     void insertTempTrackPoint(P trackPoint);
 
-    boolean existTempTrack();
+    T getTempTrack();
 
     void  resetSaverManager();
+
+    boolean existTrack(ITrackInfo track);
+
+    void onDestroy();
 }

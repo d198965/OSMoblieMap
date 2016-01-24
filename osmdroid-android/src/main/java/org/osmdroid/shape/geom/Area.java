@@ -26,5 +26,6 @@ public interface Area extends CShape
      * @return true or false
      */
     public boolean contains(double x, double y);
+
     public double areaVaue();
 }

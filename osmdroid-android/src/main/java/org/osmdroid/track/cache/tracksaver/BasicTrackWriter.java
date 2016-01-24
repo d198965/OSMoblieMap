@@ -5,6 +5,7 @@ import android.util.Log;
 import org.osmdroid.track.BasicTrack;
 import org.osmdroid.track.BasicTrackPoint;
 import org.osmdroid.track.ITrackInfo;
+import org.osmdroid.track.ITrackPath;
 import org.osmdroid.track.cache.BasicSQLTrackPathStorage;
 
 /**
@@ -41,6 +42,14 @@ public class BasicTrackWriter implements ITrackFileSystemCache<BasicTrack, Basic
         }
         return localStorageManager.existTrack(trackInfo.getTrackName());
     }
+
+    public BasicTrack getTrack(ITrackInfo trackInfo){
+        if (trackInfo == null){
+            return null;
+        }
+        return localStorageManager.getTrack(trackInfo.getTrackName());
+    }
+
 
     public boolean deleteTrack(ITrackInfo trackInfo){
         if (trackInfo == null){

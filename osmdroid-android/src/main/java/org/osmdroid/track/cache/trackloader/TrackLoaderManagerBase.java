@@ -136,13 +136,13 @@ public abstract class TrackLoaderManagerBase {
 
         public synchronized void initialiseLooperRect(Extent extent) {
             if (mTrackRect == null) {
-                mTrackRect = extent;
-                mLoopRect = extent;
+                mTrackRect = extent.clone();
+                mLoopRect = extent.clone();
             } else if (mTrackRect.covers(extent)) {
                 mLoopRect = null;// 无需加载
             } else {
                 mTrackRect = mTrackRect.getUnion(extent);
-                mLoopRect = mTrackRect;
+                mLoopRect = mTrackRect.clone();
             }
         }
 

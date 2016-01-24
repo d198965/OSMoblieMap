@@ -9,5 +9,7 @@ public interface ITrackPath<T extends ITrackPoint> extends IDrawableFeature,ITra
 
     double length();
 
+    void addTrackPoint(T newPoint);
+
     T [] getTrackPoints();
 }

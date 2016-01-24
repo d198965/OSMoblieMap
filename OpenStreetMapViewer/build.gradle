@@ -10,6 +10,10 @@ android {
         targetSdkVersion 23
         versionCode 16
         versionName "5.0-SNAPSHOT"
+        multiDexEnabled true
+    }
+    dexOptions {
+        javaMaxHeapSize "2g"
     }
     buildTypes {
         release {
@@ -32,5 +36,6 @@ android {
 dependencies {
     //compile 'android.support:compatibility-v4:23+'
     compile project(':osmdroid-android')
+    compile 'com.android.support:multidex:1.0.1'
     //compile 'org.osmdroid:osmdroid-third-party:5.0-SNAPSHOT'
 }

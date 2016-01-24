@@ -11,11 +11,12 @@ import java.util.List;
  * Created by zdh on 15/12/28.
  */
 // 读取数据库中的Track，给Provider
-public class BasicArchiveTrack implements IArchiveTrack{
+public class BasicArchiveTrack extends AbstractArchiveTrack {
     BasicSQLTrackPathStorage trackPathStorage;
-    @Override
-    public void init(String trackSaveFilePath) throws Exception {
-        trackPathStorage = BasicSQLTrackPathStorage.instance(trackSaveFilePath);
+
+    public BasicArchiveTrack(String trackSaveFilePath) {
+        super(trackSaveFilePath);
+        this.trackPathStorage = BasicSQLTrackPathStorage.instance(trackSaveFilePath);
     }
 
     @Override

@@ -5,7 +5,7 @@ import android.os.Parcel;
 /**
  * @version 1.0
  */
-public class Extent implements Area {
+public class Extent implements CShape {
     /**
      */
     protected CPoint mleftdown = null;
@@ -379,15 +379,10 @@ public class Extent implements Area {
     /**
      * @return
      */
-    public Object clone() {
+    @Override
+    public Extent clone() {
         return new Extent(this.getMinX(), this.getMinY(), this.getMaxX(),
                 this.getMaxY());
-    }
-
-    @Override
-    public double areaVaue() {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
     public static final Creator<Extent> CREATOR =

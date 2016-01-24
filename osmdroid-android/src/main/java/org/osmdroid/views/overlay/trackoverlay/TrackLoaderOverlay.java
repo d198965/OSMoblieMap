@@ -19,8 +19,8 @@ import org.osmdroid.views.overlay.Overlay;
 /**
  * Created by zdh on 15/12/23.
  */
-public class TrackOverlay extends Overlay implements TrackLoaderManagerBase.ITrackLoaderListener {
-    private static final String TAG = TrackOverlay.class.getName();
+public class TrackLoaderOverlay extends Overlay implements TrackLoaderManagerBase.ITrackLoaderListener {
+    private static final String TAG = TrackLoaderOverlay.class.getName();
     TrackLoaderManager mTrackManager;
     private final Extent mViewPort = new Extent(0, 0, 0, 0);
     private IGeoPoint mTopRightGeoPoint;
@@ -30,7 +30,7 @@ public class TrackOverlay extends Overlay implements TrackLoaderManagerBase.ITra
 
     private Canvas mCanvas;
     private Projection mProjection;
-    public TrackOverlay(TrackLoaderManager trackLoaderManager, Context ctx) {
+    public TrackLoaderOverlay(TrackLoaderManager trackLoaderManager, Context ctx) {
         super(ctx);
         mTrackManager = trackLoaderManager;
         mRender = new SimpleRender(255,0xff5566,5,4,0x323232);
@@ -47,7 +47,7 @@ public class TrackOverlay extends Overlay implements TrackLoaderManagerBase.ITra
         mTopRightGeoPoint = mProjection.getNorthEast();
         mBottomLeftGeoPoint = mProjection.getSouthWest();
         mViewPort.setLeftdown(new CPoint(mBottomLeftGeoPoint.getLongitude(), mBottomLeftGeoPoint.getLatitude()));
-        mViewPort.setLeftdown(new CPoint(mTopRightGeoPoint.getLongitude(), mTopRightGeoPoint.getLatitude()));
+        mViewPort.setRightup(new CPoint(mTopRightGeoPoint.getLongitude(), mTopRightGeoPoint.getLatitude()));
         drawTracks(mViewPort);
     }
 

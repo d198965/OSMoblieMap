@@ -119,8 +119,9 @@ public class BasicSQLTrackPathStorage {
         try {
             if (db == null) {
                 File file = new File(dataBasePath);
-                if (!file.exists()) {
-                    throw new FileNotFoundException("没有找到文件");
+                File folderFile = new File(file.getParent());
+                if (!folderFile.exists()){
+                    folderFile.mkdir();
                 }
                 db = SQLiteDatabase.openDatabase(dataBasePath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
                 if (db.getVersion() < 1) {
@@ -628,8 +629,9 @@ public class BasicSQLTrackPathStorage {
             mCursor.close();
             return null;
         }
+        BasicTrack temTrack = readTrackFromCursor(mCursor, true);
         mCursor.close();
-        return readTrackFromCursor(mCursor, true);
+        return temTrack;
     }
 
     public boolean existTrack(long trackid) {

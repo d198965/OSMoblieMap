@@ -3,15 +3,19 @@ package org.osmdroid.samplefragments;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Environment;
 
 import org.osmdroid.tileprovider.IRegisterReceiver;
+import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
+import org.osmdroid.tileprovider.modules.MapTileFileStorageProviderBase;
 import org.osmdroid.track.cache.trackloader.BasicArchiveTrack;
-import org.osmdroid.track.cache.trackloader.IArchiveTrack;
+import org.osmdroid.track.cache.trackloader.AbstractArchiveTrack;
 import org.osmdroid.track.cache.trackloader.TrackFileArchiveLoader;
 import org.osmdroid.track.cache.trackloader.TrackLoaderBase;
 import org.osmdroid.track.cache.trackloader.TrackLoaderManager;
-import org.osmdroid.views.overlay.trackoverlay.TrackOverlay;
+import org.osmdroid.views.overlay.trackoverlay.TrackLoaderOverlay;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,15 +42,18 @@ public class SampleTrackLoaderTest extends BaseSampleFragment {
     @Override
     protected void addOverlays() {
         super.addOverlays();
-
         // 组建起来
         List<TrackLoaderBase> trackLoaderBases = new ArrayList<>();
-        BasicArchiveTrack archiveTrack = new BasicArchiveTrack();
-        ArrayList<IArchiveTrack> archiveTracks = new ArrayList<>();
+
+        File OSMDROID_PATH = new File(Environment.getExternalStorageDirectory(),
+                "osmdroid/sqlite/tracks.db");
+        BasicArchiveTrack archiveTrack = new BasicArchiveTrack(OSMDROID_PATH.getPath());
+
+        ArrayList<AbstractArchiveTrack> archiveTracks = new ArrayList<>();
         archiveTracks.add(archiveTrack);
         trackLoaderBases.add(new TrackFileArchiveLoader(registerReceiver,8,10,archiveTracks));
         TrackLoaderManager trackLoaderManager = new TrackLoaderManager(trackLoaderBases);
 
-        mMapView.getOverlays().add(new TrackOverlay(trackLoaderManager,getContext()));
+        mMapView.getOverlays().add(new TrackLoaderOverlay(trackLoaderManager,getContext()));
     }
 }
